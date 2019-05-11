@@ -24,17 +24,18 @@ cost = []
 np.random.seed(1)
 
 w0 = 2 * np.random.random((2, 4)) - 1
-#b0 = np.zeros(1)
+b0 = np.zeros(4)
 w1 = 2 * np.random.rand(4, 1) - 1
-#b1 = np.zeros(4)
+b1 = np.zeros(1)
 #w2 = np.random.rand(4, 1)
 #b2 = np.zeros(1)
     
 for i in range(10000):
+    #set h0 to x so that we can line up hidden layer, summation layer, and activation layer indexes
     h0 = x
-    s0 = x @ w0 #+ b0
+    s0 = (x @ w0) + b0
     h1 = sigmoid(s0) #(4x4)
-    s1 = h1 @ w1 #+ b1
+    s1 = (h1 @ w1) + b1
     h2 = sigmoid(s1) #(4x4)
     #s2 = h1 @ w2 + b2
     #h2 = sigmoid(s2) #(4x1)
@@ -45,13 +46,13 @@ for i in range(10000):
     dloss = h2 - y
 
     dh1 = d_sigmoid(s1) * dloss
-    #db1 = np.sum(dloss)
+    db1 = np.sum(dloss, axis=0)
     # n x a * a x m = n x m
     # fwd pass h1 x w2 = h2
     dw1 = h1.T @ dh1
 
     dh0 = d_sigmoid(s0) * dh1
-    #db1 = np.sum(dh2)
+    db0 = np.sum(dh1, axis = 0)
     dw0 = h0.T @ dh0
 
     #dh0 = d_sigmoid(s0) * dh1
@@ -65,7 +66,7 @@ for i in range(10000):
     w0 = w0 - dw0 * lr
 
     #b2 = b2 - db2 * lr
-    #b1 = b1 - db1 * lr#
-    #b0 = b0 - db0 * lr
+    b1 = b1 - db1 * lr#
+    b0 = b0 - db0 * lr
 
     print(h2)
