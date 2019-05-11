@@ -15,7 +15,7 @@ def d_bce_loss(pred, y):
 lr = 0.1
 
 x = np.array([[0,0],[0,1],[1,0],[1,1]])
-y = np.array([[0,0,1,1]]).T
+y = np.array([[0,1,0,1]]).T
 
 #x = np.array([[1,0], [0,1]])
 #y = np.array([[1], [0]])
@@ -51,14 +51,12 @@ for i in range(10000):
     # fwd pass h1 x w2 = h2
     dw2 = h2.T @ dh2
 
-    dh1 = d_sigmoid(s1) * dloss
-    db1 = np.sum(dloss, axis=0)
-    # n x a * a x m = n x m
-    # fwd pass h1 x w2 = h2
+    dh1 = d_sigmoid(s1) * dh2
+    db1 = dloss#, axis=0)
     dw1 = h1.T @ dh1
 
     dh0 = d_sigmoid(s0) * dh1
-    db0 = np.sum(dh1, axis = 0)
+    db0 = dh1#, axis = 0)
     dw0 = h0.T @ dh0
 
     #dh0 = d_sigmoid(s0) * dh1
@@ -72,7 +70,7 @@ for i in range(10000):
     w0 = w0 - dw0 * lr
 
     b2 = b2 - db2 * lr
-    b1 = b1 - db1 * lr#
+    b1 = b1 - db1 * lr
     b0 = b0 - db0 * lr
 
 
