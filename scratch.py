@@ -25,10 +25,10 @@ np.random.seed(1)
 
 w0 = 2 * np.random.random((2, 4)) - 1
 b0 = np.zeros(4)
-w1 = 2 * np.random.rand(4, 1) - 1
-b1 = np.zeros(1)
-#w2 = np.random.rand(4, 1)
-#b2 = np.zeros(1)
+w1 = 2 * np.random.rand(4, 4) - 1
+b1 = np.zeros(4)
+w2 = np.random.rand(4, 1)
+b2 = np.zeros(1)
     
 for i in range(10000):
     #set h0 to x so that we can line up hidden layer, summation layer, and activation layer indexes
@@ -37,13 +37,19 @@ for i in range(10000):
     h1 = sigmoid(s0) #(4x4)
     s1 = (h1 @ w1) + b1
     h2 = sigmoid(s1) #(4x4)
-    #s2 = h1 @ w2 + b2
-    #h2 = sigmoid(s2) #(4x1)
+    s2 = h2 @ w2 + b2
+    h3 = sigmoid(s2) #(4x1)
 
-    loss = bce_loss(h2, y)
+    loss = bce_loss(h3, y)
     cost.append(np.average(loss))
     #for positive class error is BCE - 1, for negative, just BCE - 0, or the same as our Y classes!
-    dloss = h2 - y
+    dloss = h3 - y
+
+    dh2 = d_sigmoid(s2) * dloss
+    db2 = np.sum(dloss, axis=0)
+    # n x a * a x m = n x m
+    # fwd pass h1 x w2 = h2
+    dw2 = h2.T @ dh2
 
     dh1 = d_sigmoid(s1) * dloss
     db1 = np.sum(dloss, axis=0)
@@ -61,12 +67,13 @@ for i in range(10000):
 
     #print(dw0, dw1, dw2)
 
-    #w2 = w2 - dw2 * lr
+    w2 = w2 - dw2 * lr
     w1 = w1 - dw1 * lr
     w0 = w0 - dw0 * lr
 
-    #b2 = b2 - db2 * lr
+    b2 = b2 - db2 * lr
     b1 = b1 - db1 * lr#
     b0 = b0 - db0 * lr
 
-    print(h2)
+
+print(h3)
