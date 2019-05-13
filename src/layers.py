@@ -2,26 +2,6 @@ import autograd.numpy as np
 import matplotlib.pyplot as plt
 from autograd import grad, elementwise_grad
 
-def sigmoid(x):
-    return 1/(1 + np.exp(-x))
-
-def d_sigmoid(x):
-    return sigmoid(x) * (1-sigmoid(x))
-
-def bce_loss(pred, y):
-    return -(y * np.log(pred) + (1 - y) * np.log(1 - pred))
-
-def d_bce_loss(pred, y):
-    return y - pred
-
-lr = 0.1
-
-x = np.array([[0,0],[0,1],[1,0],[1,1]])
-y = np.array([[0,1,0,1]]).T
-
-cost = []
-np.random.seed(1)
-
 class Layer(object):
     ''' Base class for a layer.'''
     def __init__(self, inputs, input_size, output_size):
@@ -83,7 +63,7 @@ class LinearLayer(Layer):
             self.h = self.s
         return self.h
 
-    def backward_pass(self, grad):
+    def backward_pass(self, grad, lr):
         #calculate the gradient 
         if self.activation_function and self.d_activation_function:
             dh = self.d_activation_function(self.s) * grad
@@ -95,28 +75,3 @@ class LinearLayer(Layer):
         self.weights = self.weights - dw * lr
         self.bias = self.bias - db * lr
         return dh
-
-layer_0 = x
-layer_1 = LinearLayer(2, 4, sigmoid)
-layer_2 = LinearLayer(4, 4, sigmoid)
-layer_3 = LinearLayer(4, 1, sigmoid)
-
-cost = []
-
-for i in range(1000):
-
-    hl3 = layer_3(layer_2(layer_1(layer_0)))
-    loss = np.average(bce_loss(hl3, y))
-    dloss = hl3 - y
-
-    _ = layer_1.backward_pass(layer_2.backward_pass(layer_3.backward_pass(dloss)))
-    
-    if i % 1000 == 0:
-        print(loss)
-    cost.append(loss)    
-
-plt.plot(cost)
-plt.ylabel('Loss')
-plt.show()
-
-
