@@ -1,4 +1,4 @@
-# Example Neural Net in Numpy
+# Neural Net in Numpy
 
 Just for learning.
 
