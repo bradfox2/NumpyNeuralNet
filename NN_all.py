@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def sigmoid(x):
     return 1/(1 + np.exp(-x))
@@ -37,20 +38,30 @@ class Layer(object):
     def backward_pass(self):
         '''Backward prop the error gradient.'''
         raise NotImplementedError
+    
+    def __repr__(self):
+        raise NotImplementedError
 
 class LinearLayer(Layer):
     def __init__(self, activation_function, d_activation_function, input_size, output_size):
-        Layer.activation_function = activation_function
-        Layer.input_size = input_size
-        Layer.output_size = output_size
+        super().__init__(None, input_size, output_size)
+        self.input_size = input_size
+        self.output_size = output_size
         self.weights = np.random.rand(input_size, output_size)
         self.bias = np.zeros(output_size)
         self.d_activation_function = d_activation_function
+        self.activation_function = activation_function
         self.s = None
         self.h = None
 
+    def __call__(self, input):
+        return self.forward_pass(input)
+
+    def __repr__(self):
+       return f"Linear Layer of size ({self.input_size, self.output_size})"
+
     def forward_pass(self, inputs):
-        Layer.inputs = inputs
+        self.inputs = inputs
         self.s = inputs @ self.weights + self.bias
         if self.activation_function:
             self.h = self.activation_function(self.s)
@@ -64,13 +75,36 @@ class LinearLayer(Layer):
             dh = self.d_activation_function(self.s) * grad
         else:
              dh = self.s * grad
-        db = dh
-        dw = self.h.T @ dh
+        db = grad
+        dw = self.inputs.T @ dh
         #update layer parameters to be more accurate!
-        self.weights -= dw * lr
-        self.bias -= db * lr
+        self.weights = self.weights - dw * lr
+        self.bias = self.bias - db * lr
         return dh
 
+layer_0 = x
+layer_1 = LinearLayer(sigmoid, d_sigmoid, 2, 4)
+layer_2 = LinearLayer(sigmoid, d_sigmoid, 4, 4)
+layer_3 = LinearLayer(sigmoid, d_sigmoid, 4, 1)
+
+cost = []
+
+for i in range(1000):
+
+    hl3 = layer_3(layer_2(layer_1(layer_0)))
+    loss = np.average(bce_loss(hl3, y))
+    dloss = hl3 - y
+
+    _ = layer_1.backward_pass(layer_2.backward_pass(layer_3.backward_pass(dloss)))
+    
+    if i % 1000 == 0:
+        print(loss)
+
+    cost.append(loss)    
+
+plt.plot(cost)
+plt.ylabel('Loss')
+plt.show()
 
 w0 = 2 * np.random.random((2, 4)) - 1
 b0 = np.zeros(4)
@@ -90,7 +124,7 @@ s2 = h2 @ w2 + b2
 h3 = sigmoid(s2) #(4x1)
 
 
-loss = bce_loss(h3, y)s
+loss = bce_loss(h3, y)
 cost.append(np.average(loss))
 #for positive class error is BCE - 1, for negative, just BCE - 0, or the same as our Y classes!
 dloss = h3 - y
