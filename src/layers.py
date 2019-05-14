@@ -1,6 +1,7 @@
 import autograd.numpy as np
 import matplotlib.pyplot as plt
 from autograd import grad, elementwise_grad
+from initializers import random_normal
 
 class Layer(object):
     ''' Base class for a layer.'''
@@ -34,11 +35,14 @@ class LinearLayer(Layer):
     Returns:
         array -- Activated output for each unit, number of units specified per output_size.
     """
-    def __init__(self, input_size, output_size, activation_function, d_activation_function = None):
+    def __init__(self, input_size, output_size, 
+        activation_function = sigmoid, 
+        d_activation_function = None, 
+        weight_initialization_function = random_normal):
         super().__init__(None, input_size, output_size)
         self.input_size = input_size
         self.output_size = output_size
-        self.weights = np.random.rand(input_size, output_size)
+        self.weights = weight_initialization_function(input_size, output_size)
         self.bias = np.zeros(output_size)
         if not d_activation_function:
             self.d_activation_function = elementwise_grad(activation_function)
