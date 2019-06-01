@@ -1,2 +1,12 @@
-# Basic Numpy Neural Net
-Just a demonstration of forward and backprop for learning and teaching.
+# Neural Net in Numpy
+
+Just for learning.
+
+Todo:
+* CUDNN interactivity
+* Other Layer Types
+* Explore Attention 
+* Optimizers
+* Weight Initialization Schemes 
+* Batch Norm
+* MNIST Example
