@@ -1,0 +1,9 @@
+NNN.egg-info/PKG-INFO
+NNN.egg-info/SOURCES.txt
+NNN.egg-info/dependency_links.txt
+NNN.egg-info/top_level.txt
+src/__init__.py
+src/activation_functions.py
+src/initializers.py
+src/layers.py
+src/lossfunctions.py

@@ -1,0 +1,25 @@
+Metadata-Version: 1.1
+Name: NNN
+Version: 0.1
+Summary: Basic NN for learning
+Home-page: https://github.com/bradfox2
+Author: Bradley Fox
+Author-email: bradfox2@gmail.com
+License: UNKNOWN
+Description: # Neural Net in Numpy
+        
+        Just for learning.
+        
+        Todo:
+        * CUDNN interactivity
+        * Other Layer Types
+        * Explore Attention 
+        * Optimizers
+        * Weight Initialization Schemes 
+        * Batch Norm
+        * MNIST Example
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent

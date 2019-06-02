@@ -14,8 +14,8 @@ def bce_loss(pred, y):
     """
     pred[pred == 0] = 1e-15
     y[y == 0] = 1e-15
-    pred[pred == 1] = 0.9999999999999999
-    y[y == 1] = 0.9999999999999999
+    pred[pred == 1] = 0.999999999999
+    y[y == 1] = 0.9999999999999
     
     return -(y * np.log(pred) + (1 - y) * np.log(1 - pred))
 
