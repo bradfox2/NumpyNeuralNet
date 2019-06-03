@@ -22,15 +22,13 @@ def run(epochs):
 
     cost = []
 
-    x = np.array([[0,0],[0,100.],[100.,0],[1.,1.]])
+    x = np.array([[0,0],[0,1.],[1.,0],[1.,1.]])
     y = np.array([[0,1.,0,1.]]).T
 
-    print(y)
-
     layer_0 = x
-    layer_1 = LinearLayer(2, 4, relu, weight_initialization_function=Initializer.random_normal)
-    layer_2 = LinearLayer(4, 4, relu, weight_initialization_function=Initializer.relu_uniform, num_layers = 3)
-    layer_3 = LinearLayer(4, 1, sigmoid, weight_initialization_function=Initializer.sigmoid_uniform)
+    layer_1 = LinearLayer(2, 8, relu, weight_initialization_function=Initializer.random_normal)
+    layer_2 = LinearLayer(8, 16, relu, weight_initialization_function=Initializer.relu_uniform, num_layers = 3)
+    layer_3 = LinearLayer(16, 1, sigmoid, weight_initialization_function=Initializer.sigmoid_uniform)
 
     cost = []
 

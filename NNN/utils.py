@@ -20,11 +20,7 @@ class Data(object):
             warnings.warn("Batchsize greater than records in data, returning all records per batch.")
         while True:
             for i in range(0, len(self.train), self.batch_size):
-                if i + self.batch_size < len(self.train):
-                    yield Data(self.train[i:i+self.batch_size], self.target[i:i+self.batch_size], self.batch_size)
-                    
-                else:
-                    yield Data(self.train[i:len(self.train)], self.target[i:len(self.target)], self.batch_size)
+                yield Data(self.train[i:i+self.batch_size], self.target[i:i+self.batch_size], self.batch_size)
     @property
     def mini_batch(self):
         if not self._mini_batch:

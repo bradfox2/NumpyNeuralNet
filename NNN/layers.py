@@ -78,11 +78,12 @@ class LinearLayer(Layer):
     def backward_pass(self, grad, lr):
         #calculate the gradient 
         if self.activation_function and self.d_activation_function:
-            dh = self.d_activation_function(self.s) * grad
+            ds = self.d_activation_function(self.s) * grad
         else:
-             dh = self.s * grad
+             ds = self.s * grad
         db = grad
-        dw = self.inputs.T @ dh
+        dw = self.inputs.T @ ds
+        dh = ds @ self.weights.T
         #update layer parameters to be more accurate!
         self.weights = self.weights - dw * lr
         self.bias = self.bias - db * lr
