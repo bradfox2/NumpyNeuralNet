@@ -81,7 +81,7 @@ class LinearLayer(Layer):
             ds = self.d_activation_function(self.s) * grad
         else:
              ds = self.s * grad
-        db = grad
+        db = np.average(grad, axis=0)
         dw = self.inputs.T @ ds
         dh = ds @ self.weights.T
         #update layer parameters to be more accurate!
@@ -177,7 +177,32 @@ class BatchNorm(Layer):
 
 class BatchNormRaw(BatchNorm):
     def __init__(self):
-        super().__init__(self, input_size, epsilon=0.001, scale=1, shift=0)       
+        super().__init__(self, input_size, epsilon=0.001, scale=1, shift=0)  
+
+        # epsilon = 0.001
+    # rows = len(x)
+    # features = len(x[0])
+    # print(rows, features)
+
+    # np.random.seed(1)
+    # x = np.random.rand(4,2) * 100
+    # x
+    # mean = np.sum(x,axis=0)/rows
+    # mean
+    # x_mm = x - mean
+    # x_mm
+    # sq = normal_x ** 2
+    # var = np.sum(sq, axis=0)/rows
+    # var
+    # var_eps = var + epsilon
+    # var_eps
+    # sqrt_var = np.sqrt(var_eps)
+    # sqrt_var
+    # normalize = x_mm/sqrt_var
+    # normalize
+    # gamma_x = normalize * gamma
+    # out = gamma_x + beta
+
 if __name__ == "__main__":
     # i = np.random.randn(2,2)
     # #print(np.mean(i,axis=0))
@@ -186,27 +211,3 @@ if __name__ == "__main__":
     # grad = np.array([[-1,1],[-1,1]])
     # print(bn.backward_pass(grad, 1))
     pass
-
-# epsilon = 0.001
-# rows = len(x)
-# features = len(x[0])
-# print(rows, features)
-
-# np.random.seed(1)
-# x = np.random.rand(4,2) * 100
-# x
-# mean = np.sum(x,axis=0)/rows
-# mean
-# x_mm = x - mean
-# x_mm
-# sq = normal_x ** 2
-# var = np.sum(sq, axis=0)/rows
-# var
-# var_eps = var + epsilon
-# var_eps
-# sqrt_var = np.sqrt(var_eps)
-# sqrt_var
-# normalize = x_mm/sqrt_var
-# normalize
-# gamma_x = normalize * gamma
-# out = gamma_x + beta

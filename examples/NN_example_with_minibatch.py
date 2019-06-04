@@ -25,8 +25,8 @@ if not batch_size:
 mini_batches_per_epoch = int(len(x)/batch_size) #int rounds fp down
 data = Data(x,y,batch_size)
 
-layer_1 = LinearLayer(2, 4, relu, weight_initialization_function=Initializer.random_normal)
-layer_2 = LinearLayer(4, 4, relu, weight_initialization_function=Initializer.relu_uniform, num_layers = 3)
+layer_1 = LinearLayer(2, 10, relu, weight_initialization_function=Initializer.random_normal)
+layer_2 = LinearLayer(10, 4, relu, weight_initialization_function=Initializer.relu_uniform, num_layers = 3)
 layer_3 = LinearLayer(4, 1, sigmoid, weight_initialization_function=Initializer.sigmoid_uniform)
 
 cost = []
