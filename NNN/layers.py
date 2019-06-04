@@ -92,10 +92,9 @@ class LinearLayer(Layer):
 class BatchNorm(Layer):
     """Batch normalization layer.
     
-    Batch Normalization is a technique to provide any layer in a Neural Network with inputs 
-    that are zero mean/unit variance.
+    Batch Normalization is a technique to provide any layer in a Neural Network with inputs that are zero mean/unit variance.
     """
-    def __init__(self, input_size, epsilon=0.001, scale=1, shift=0):
+    def __init__(self, train=True, input_size, epsilon=0.001, scale=1, shift=0):
         super().__init__(None, input_size, output_size=input_size)
         self.epsilon = epsilon
         self.inputs_mean = None
@@ -105,15 +104,34 @@ class BatchNorm(Layer):
         self.shift = shift #beta, learnable, controls shifting the mean up or down
         self.scale = scale #gamma, learnable, controls how much scaling is applied
         self.output = None
+        self.population_mean_1 = 0
+        self.population_mean_0 = 0
+        self.population_count= 0 
+        self.m2 = 0
 
-    def forward_pass(self, inputs):
-        self.inputs = inputs
-        self.inputs_mean = BatchNorm.mb_mean(inputs)
-        self.inputs_variance = BatchNorm.mb_variance(inputs, self.inputs_mean)
-        self.normalized_input = BatchNorm.normalize_input(inputs, self.inputs_mean, 
-                                                          self.inputs_variance, self.epsilon)
-        self.output = BatchNorm.scale_and_shift(self.normalized_input, self.scale, self.shift)
-        return self.output
+    def wellfords(self):
+        pass
+        
+    def forward_pass(self, inputs, train):
+        if self.train:
+            self.inputs_mean = BatchNorm.mb_mean(inputs)
+            
+            self.population_mean_0 = self.population_mean_1
+            self.population_mean_1 = (self.population_mean * self.population_count + self.inputs_mean * len(inputs))/(self.population_count + len(inputs))
+
+            #keep running sums of the data averages and variances to use during inference
+            #wellford's algorithm
+            #sum of squares differences from the current mean
+            self.m2 += (self.inputs_mean - self.population_mean_0) * (self.inputs_mean - self.population_mean)
+            self.population_variance = self.m2/self.population_count 
+
+            self.population_count += len(inputs)
+            self.inputs_variance = BatchNorm.mb_variance(inputs, self.inputs_mean)
+            self.normalized_input = BatchNorm.normalize_input(inputs, self.inputs_mean, self.inputs_variance, self.epsilon)
+            self.output = BatchNorm.scale_and_shift(self.normalized_input, self.scale, self.shift)
+            return self.output
+        else:
+            return (inputs - self.population_mean_1)/(np.sqrt(self.population_variance + epsilon))
 
     def backward_pass(self, grad, lr):
         # shift 
@@ -137,7 +155,7 @@ class BatchNorm(Layer):
         return grad_var + grad_mean
 
     def __repr__(self):
-        return str(self.scale)
+        return "Scaling by {} and shifting by {}".format(str(self.scale), str(self.shift))
     
     @staticmethod
     def mb_mean(inputs):
@@ -157,7 +175,10 @@ class BatchNorm(Layer):
     @staticmethod
     def scale_and_shift(inputs, gamma, beta):
         return inputs * gamma + beta
-    
+
+class BatchNormRaw(BatchNorm):
+    def __init__(self):
+        super().__init__(self, input_size, epsilon=0.001, scale=1, shift=0)       
 if __name__ == "__main__":
     # i = np.random.randn(2,2)
     # #print(np.mean(i,axis=0))
@@ -166,3 +187,27 @@ if __name__ == "__main__":
     # grad = np.array([[-1,1],[-1,1]])
     # print(bn.backward_pass(grad, 1))
     pass
+
+epsilon = 0.001
+rows = len(x)
+features = len(x[0])
+print(rows, features)
+
+np.random.seed(1)
+x = np.random.rand(4,2) * 100
+x
+mean = np.sum(x,axis=0)/rows
+mean
+x_mm = x - mean
+x_mm
+sq = normal_x ** 2
+var = np.sum(sq, axis=0)/rows
+var
+var_eps = var + epsilon
+var_eps
+sqrt_var = np.sqrt(var_eps)
+sqrt_var
+normalize = x_mm/sqrt_var
+normalize
+gamma_x = normalize * gamma
+out = gamma_x + beta
