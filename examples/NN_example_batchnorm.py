@@ -23,14 +23,14 @@ def run(epochs):
 
     cost = []
 
-    x = np.array([[0,0],[0,100.],[100.,0],[11000.,11320.]])
+    x = np.array([[0,0],[0,1.],[1.,0],[1.,1.]])
     y = np.array([[0,1.,0,1.]]).T
 
     layer_0 = x
     layer_1 = LinearLayer(2, 4, sigmoid, weight_initialization_function=Initializer.random_normal)
-    layer_1n = BatchNorm(4)
+    layer_1n = BatchNorm(4)#, train=True)
     layer_2 = LinearLayer(4, 4, relu, weight_initialization_function=Initializer.relu_uniform, num_layers = 3)
-    layer_2n = BatchNorm(4)
+    layer_2n = BatchNorm(4)#, train=True)
     layer_3 = LinearLayer(4, 1, sigmoid, weight_initialization_function=Initializer.sigmoid_uniform)
 
     cost = []
@@ -53,7 +53,7 @@ def run(epochs):
             
             if i % 1000 == 0:
                 print(loss)
-                print(layer_2n)
+                print(layer_2n.population_count)
             cost.append(loss)    
 
     print(hl3)
