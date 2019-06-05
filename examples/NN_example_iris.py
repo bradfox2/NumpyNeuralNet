@@ -1,3 +1,5 @@
+'''Example to train a 3 layer network on Iris dataset.  Results heavily dependent on initialization.'''
+
 import collections
 
 import autograd.numpy as np

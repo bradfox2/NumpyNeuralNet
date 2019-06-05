@@ -13,11 +13,11 @@ class Layer(object):
         self.output_size = output_size
     
     def forward_pass(self):
-        ''' Forward prop the input signal.'''
+        ''' Forward propagate the input signal through the layer transformation.'''
         raise NotImplementedError
     
     def backward_pass(self):
-        '''Backward prop the error gradient.'''
+        '''Backward propagate the error gradient.'''
         raise NotImplementedError
     
     def __repr__(self):
@@ -92,8 +92,15 @@ class LinearLayer(Layer):
 class BatchNorm(Layer):
     """Batch normalization layer.
     
-    Batch Normalization is a technique to provide any layer in a Neural Network with inputs 
-    that are zero mean/unit variance.
+    Batch Normalization is a technique to provide any layer in a Neural Network with inputs that are zero mean/unit variance.
+    
+    Arguments:
+        input_size {int} -- Num units, equal to previous layer output units.
+        epsilon {float} -- Small value added to prevent divide by 0.
+        scale {int} -- Learnable parameter that will control the amount of scaling applied to the input values, also called gamma.
+        shift {int} -- Value added to the input values to apply an offset, also called beta.
+    Returns:
+        array -- Scaled and shifted array, scaling and shifting magnitude as learned.
     """
     def __init__(self, input_size, epsilon=0.001, scale=1, shift=0):
         super().__init__(None, input_size, output_size=input_size)
@@ -158,24 +165,66 @@ class BatchNorm(Layer):
     
     @staticmethod
     def mb_mean(inputs):
-        '''Calulate mean of the mini batch'''
+        """Calulate mean of the mini batch
+        
+        Arguments:
+            inputs {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
         return np.mean(inputs, axis=0)
 
     @staticmethod
     def mb_variance(inputs, mb_mean):
-        '''Calculate variance of mini batch'''
+        """Calculate variance of mini batch
+        
+        Arguments:
+            inputs {[type]} -- [description]
+            mb_mean {[type]} -- [description]
+        
+        Returns:
+            [type] -- [description]
+        """
         #same as np.var(inputs)
         return np.mean((inputs - mb_mean)**2, axis=0)
 
     @staticmethod
     def normalize_input(inputs, inputs_mean, inputs_variance, epsilon):
+        """Normalize the input array to the mean and variance
+        
+        Arguments:
+            inputs {[type]} -- [description]
+            inputs_mean {[type]} -- [description]
+            inputs_variance {[type]} -- [description]
+            epsilon {[type]} -- [description]
+        
+        Returns:
+            array
+        """
+        
        return (inputs - inputs_mean)/((inputs_variance**2 + epsilon)**(1/2))
 
     @staticmethod
     def scale_and_shift(inputs, gamma, beta):
+        """Scale input by gamma and shift by beta.
+        
+        Arguments:
+            inputs {[type]} -- [description]
+            gamma {[type]} -- [description]
+            beta {[type]} -- [description]
+        
+        Returns:
+            array
+        """
         return inputs * gamma + beta
 
 class BatchNormRaw(BatchNorm):
+    """Batch Norm layer without use of autograd to compute transformation derivatives.
+    
+    Arguments:
+        BatchNorm {[type]} -- [description]
+    """
     def __init__(self):
         super().__init__(self, input_size, epsilon=0.001, scale=1, shift=0)  
 
