@@ -6,7 +6,7 @@ Todo:
 - [] CUDNN interactivity
 - [] Other Layer Types
 - [] Explore Attention 
-- [x] Optimizers
-- [] Weight Initialization Schemes 
+- [] Optimizers
+- [x] Weight Initialization Schemes 
 - [x] Batch Norm
 - [] MNIST Example
