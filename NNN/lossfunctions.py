@@ -15,7 +15,7 @@ def bce_loss(pred, y):
     pred[pred == 0] = 1e-15
     y[y == 0] = 1e-15
     pred[pred == 1] = 0.999999999999
-    y[y == 1] = 0.9999999999999
+    #y[y == 1] = 0.9999999999999
     
     return -(y * np.log(pred) + (1 - y) * np.log(1 - pred))
 
@@ -28,4 +28,21 @@ def d_bce_loss(pred, y):
     Returns:
         See bce_loss.
     """
-    return y - pred 
+    return pred - y
+
+def cross_entropy_loss(pred, y):
+    """Cross Entropy loss, typically used with a softmax final activation.
+    
+    Arguments:
+        pred {[type]} -- [description]
+        y {[type]} -- [description]
+    """
+    #pred[pred == 0] = 1e-15
+    #y[y == 0] = 1e-15
+    #pred[pred == 1] = 0.999999999999
+    #y[y == 1] = 0.9999999999999
+        
+    return -np.sum(y*np.log(pred), axis=1)  
+    
+def d_cross_entropy_loss(pred, y):
+    return pred - y

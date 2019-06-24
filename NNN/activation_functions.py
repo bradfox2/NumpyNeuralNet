@@ -27,3 +27,15 @@ def d_relu(x):
     """Lazy derivative of relu.
     """
     return elementwise_grad(relu)
+
+def softmax(x):
+    xp = np.exp(x)
+    return xp/np.sum(xp)
+    
+def d_softmax(x):
+    """Lazy softmax.
+    
+    Arguments:
+        x {[type]} -- [description]
+    """
+    return elementwise_grad(softmax)

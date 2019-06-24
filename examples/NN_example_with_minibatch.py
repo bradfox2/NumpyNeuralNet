@@ -33,7 +33,7 @@ cost = []
 
 for i in range(epochs):
     for idx, mb in enumerate(range(mini_batches_per_epoch)):
-        
+    
         mb = next(data.mini_batch)
         layer_0 = mb.train
         hl3 = layer_3(layer_2(layer_1(layer_0)))

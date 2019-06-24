@@ -4,6 +4,8 @@ from autograd import elementwise_grad, grad
 
 from NNN.activation_functions import sigmoid
 from NNN.initializers import Initializer
+from NNN.optimizers import vanilla, momentum
+
 
 class Layer(object):
     ''' Base class for a layer.'''
@@ -46,6 +48,7 @@ class LinearLayer(Layer):
         activation_function = sigmoid, 
         d_activation_function = None, 
         weight_initialization_function = Initializer.random_normal,
+        optimizer = momentum,
         **kwargs):
         super().__init__(None, input_size, output_size)
         self.input_size = input_size
@@ -59,6 +62,9 @@ class LinearLayer(Layer):
         self.activation_function = activation_function
         self.s = None
         self.h = None
+        self.update = 0
+        self.prev_update = None
+        self.optimizer = optimizer
 
     def __call__(self, input):
         return self.forward_pass(input)
@@ -84,8 +90,10 @@ class LinearLayer(Layer):
         db = np.average(grad, axis=0)
         dw = self.inputs.T @ ds
         dh = ds @ self.weights.T
+        
         #update layer parameters to be more accurate!
-        self.weights = self.weights - dw * lr
+        self.update = self.optimizer(self.update, dw, 0.9, lr)
+        self.weights = self.weights - self.update
         self.bias = self.bias - db * lr
         return dh
 
@@ -203,7 +211,7 @@ class BatchNorm(Layer):
             array
         """
         
-       return (inputs - inputs_mean)/((inputs_variance**2 + epsilon)**(1/2))
+        return (inputs - inputs_mean)/((inputs_variance**2 + epsilon)**(1/2))
 
     @staticmethod
     def scale_and_shift(inputs, gamma, beta):
