@@ -203,7 +203,7 @@ class BatchNorm(Layer):
             array
         """
         
-       return (inputs - inputs_mean)/((inputs_variance**2 + epsilon)**(1/2))
+        return (inputs - inputs_mean)/((inputs_variance**2 + epsilon)**(1/2))
 
     @staticmethod
     def scale_and_shift(inputs, gamma, beta):

@@ -46,8 +46,8 @@ def run(epochs):
         hl3 = layer_3(layer_2(layer_1(layer_0)))
         loss = np.average(bce_loss(hl3, y))
         dloss = hl3 - y
-        print(dloss)
-        print(hl3)
+        #print(dloss)
+        #print(hl3)
 
         _ = layer_1.backward_pass(layer_2.backward_pass(layer_3.backward_pass(dloss, lr), lr), lr)
         
