@@ -10,7 +10,7 @@ lazy-object-proxy==1.4.1
 matplotlib==3.0.3
 mccabe==0.6.1
 -e git+https://github.com/bradfox2/NumpyNeuralNet.git@ae486f05bf33f6b0c54d2255ab0b10664e528ea0#egg=NNN
-numpy==1.16.3
+numpy==1.22.0
 pkg-resources==0.0.0
 pylint==2.3.1
 pyparsing==2.4.0
